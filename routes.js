@@ -4,13 +4,6 @@ const axios = require("axios");
 const csv=require('csvtojson');
 const Enumerable = require("linq");
 
-
-const query = {
-    mostSpeeches: () => {},
-    mostSecurity: () => {},
-    leastWordy: () => {}
-};
-
 module.exports = async function(app){
 
     app.get('/', (req, res) => {
