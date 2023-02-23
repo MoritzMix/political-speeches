@@ -11,7 +11,6 @@ require('./routes')(app);
 //Mock URLs
 app.use(express.static('public'));
 
-
 http
   .createServer(app)
   .listen(port_http, () => {
