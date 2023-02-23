@@ -5,7 +5,6 @@ const http = require('http');
 
 const app = express()
 const port_http = 4000;
-const port_https = 5000;
 
 require('./routes')(app);
 
