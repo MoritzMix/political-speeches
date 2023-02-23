@@ -6,38 +6,31 @@ const Enumerable = require("linq");
 
 module.exports = async function(app){
 
-    app.get('/', (req, res) => {
-        res.send('Hello World!')
-    })
-
     app.get('/evaluation', async (req, res) => {
         const urls = Object.values(req.query);
-        //const urls =  ["http://localhost:4000/url1/test.csv","fail","http://localhost:4000/url2/test2.csv","http://localhost:4000/url3/test3.csv"];
-        const content = await getURLContents(urls)
+        const content = await getUrlContents(urls)
         let data = []
 
         for await (const el of content) {         
             if(el.status ==="fulfilled"){
-                data = data.concat(await convertCSVToJSON(el.value.data))
+                data = data.concat(await convertCsvToJson(el.value.data))
             }
         }
 
         if(data.length === 0) {
             res.status(500).send("No csv-files found")
         } else {
-            res.send(JSON.stringify(queryJson(data)));
+            res.send(JSON.stringify(evaluateJson(data)));
         }
     })
 }
 
-//http://localhost:4000/evaluation?url1=http://localhost:4000/url3/test3.csv
-
- async function getURLContents(urls) {
+ async function getUrlContents(urls) {
     const requests = urls.map((url) => axios.get(url,{responseType: "blob"}));
     return await Promise.allSettled(requests);
 }
 
-async function convertCSVToJSON(csvString){
+async function convertCsvToJson(csvString){
     return await csv({
         noheader: false,
         output: "json"
@@ -48,7 +41,7 @@ async function convertCSVToJSON(csvString){
     })
 }
 
-function queryJson(jsonData){
+function evaluateJson(jsonData){
 
     const mostSpeeches = Enumerable.from(jsonData)
         .where("new Date($.Date).getUTCFullYear() == 2013")
