@@ -2,7 +2,6 @@
 
 const axios = require("axios");
 const csv=require('csvtojson');
-const jsonpath = require('jsonpath');
 const Enumerable = require("linq");
 
 
@@ -11,8 +10,6 @@ const query = {
     mostSecurity: () => {},
     leastWordy: () => {}
 };
-
-
 
 module.exports = async function(app){
 
@@ -28,11 +25,15 @@ module.exports = async function(app){
 
         for await (const el of content) {         
             if(el.status ==="fulfilled"){
-                console.log(convertCSVToJSON(el.value.data))
                 data = data.concat(await convertCSVToJSON(el.value.data))
             }
         }
-        res.send(JSON.stringify(queryJson(data)));
+
+        if(data.length === 0) {
+            res.status(500).send("No csv-files found")
+        } else {
+            res.send(JSON.stringify(queryJson(data)));
+        }
     })
 }
 
@@ -68,7 +69,6 @@ function queryJson(jsonData){
         .orderBy("$.length")
         .toJSONString();
    
-    
     const leastWordy = Enumerable.from(jsonData)
         .groupBy("$.Speaker", "parseInt($.Words)",  (key, group)=>({"Speaker": key, length: group.sum()}), (key)=>key.toString())
         .orderBy("$.length")
