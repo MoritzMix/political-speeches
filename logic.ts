@@ -81,15 +81,15 @@ const evaluateJson = function (jsonData: Entry[]) {
         if (
             speaker[1]?.speeches > 0 &&
             speaker[1]?.speeches >
-            //@ts-expect-error
-            (result.mostSpeeches ? result.mostSecurity![1]?.speeches : 0)
+            //@ts-expect-error: Couldn't solve
+            (result.mostSpeeches ? result.mostSecurity[1]?.speeches : 0)
         ) {
             result.mostSpeeches = speaker;
         }
 
         if (
             speaker[1]?.topic > 0 &&
-            //@ts-expect-error
+            //@ts-expect-error: Couldn't solve
             speaker[1]?.topic > (result.mostSecurity ? result.mostSecurity[1]?.topic : 0)
         ) {
             result.mostSecurity = speaker;
@@ -98,7 +98,7 @@ const evaluateJson = function (jsonData: Entry[]) {
         if (
             speaker[1]?.words > 0 &&
             speaker[1]?.words <
-            //@ts-expect-error
+            //@ts-expect-error: Couldn't solve
             (result.leastWordy ? result.leastWordy[1]?.words : Number.MAX_SAFE_INTEGER)
 
         ) {
